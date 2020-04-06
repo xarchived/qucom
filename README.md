@@ -12,3 +12,19 @@ I spot 6 type of queries:
 - list: select all records of table  
 - get: select only one record by primary key  
 - query: select all records where a field is contains a certain word   
+
+
+## Installation
+Simply you can install it from PyPi by following command:
+
+```bash
+pip install -U qedgal
+```
+
+or if you prefer the latest development version, you can install it from the source:
+
+```bash
+git clone https://github.com/xurvan/qedgal.git
+cd qedgal
+python setup.py install
+```
