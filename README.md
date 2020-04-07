@@ -30,7 +30,10 @@ python setup.py install
 ```
 
 ## Quickstart
-We have to create a view for each table with a postfix "_facade" 
+Usually, There is a foreign key in a table and we don't like to get an integer or whole record from another table, we
+need only some fields of that table. Another scenario is when there are some metadata fields or some security related
+fields those we dont like to show in our query. To solve these problems for each table we going to create a view then
+customize fields as we like inside it. These views should have a "_facade" postfix so library can understand them. 
 
 ```python
 from qedgal import Qedgal
