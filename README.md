@@ -28,3 +28,39 @@ git clone https://github.com/xurvan/qedgal.git
 cd qedgal
 python setup.py install
 ```
+
+## Quickstart
+We have to create a view for each table with a postfix "_facade" 
+
+```python
+from qedgal import Qedgal
+
+db = Qedgal(host='localhost', user='USERNAME', password='PASSWORD', database='DATABASE_NAME')
+
+db.perform('''
+    create table users
+    (
+        id          serial primary key not null,
+        name        varchar            not null,
+        username    varchar unique     not null,
+        password    varchar            not null
+    )
+''')
+
+db.perform('''
+    create view users_facade as
+    select id, name, username
+    from users
+''')
+
+db.add(table='users', name='Edward Elric', username='edward', password='password')
+
+rows = db.list('users')
+for row in rows:
+    print(row)
+
+db.edit(table='users', pk=1, username='new_edward')
+
+row = db.get(table='users', pk=1)
+print(row)
+```
