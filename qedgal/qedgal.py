@@ -65,7 +65,7 @@ class Qedgal(object):
         return next(self._db.select(sql, pk), dict())
 
     def query(self, table: str, q: str, fields: list, user_id: int = None) -> list:
-        filters = [f"{key}::varchar like %s" for key in fields]
+        filters = [f'{key}::varchar like %s' for key in fields]
         values = [f'%{q}%' for _ in fields]
 
         sql = f'''
