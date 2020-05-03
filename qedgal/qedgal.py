@@ -19,7 +19,8 @@ class Qedgal(object):
             returning id
         '''
 
-        row = next(self._db.select(sql, *parameters.values()))
+        rows = self._db.select(sql, *parameters.values())
+        row = next(rows)
         return row['id']
 
     def edit(self, table: str, pk: int, **parameters: any) -> int:
