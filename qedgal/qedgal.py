@@ -1,7 +1,5 @@
 from patabase import Postgres
 
-from qedgal.exceptions import *
-
 
 class Qedgal(object):
     def __init__(self, user: str, password: str, database: str, host: str = 'localhost', port=5432):
@@ -42,12 +40,7 @@ class Qedgal(object):
             $$
         '''
 
-        try:
-            return self._db.perform(sql, *values, pk)
-        except Exception as e:
-            if 'Nothing updated' in str(e):
-                raise NothingUpdated('Nothing updated')
-            raise e
+        return self._db.perform(sql, *values, pk)
 
     def delete(self, table: str, pk: int) -> None:
         sql = f'''
