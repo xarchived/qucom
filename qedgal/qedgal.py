@@ -10,15 +10,17 @@ class Qedgal(object):
             password=password,
             database=database)
 
-    def add(self, table: str, **parameters: any) -> None:
+    def add(self, table: str, **parameters: any) -> int:
         placeholders = ['%s' for _ in parameters]
 
         sql = f'''
             insert into {table} ({', '.join(parameters)})
             values ({', '.join(placeholders)})
+            returning id
         '''
 
-        self._db.perform(sql, *parameters.values())
+        row = next(self._db.select(sql, *parameters.values()))
+        return row['id']
 
     def edit(self, table: str, pk: int, **parameters: any) -> None:
         fields = [f'{key} = %s' for key in parameters if parameters[key]]
