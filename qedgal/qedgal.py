@@ -22,17 +22,25 @@ class Qedgal(object):
         row = next(self._db.select(sql, *parameters.values()))
         return row['id']
 
-    def edit(self, table: str, pk: int, **parameters: any) -> None:
+    def edit(self, table: str, pk: int, **parameters: any) -> int:
         fields = [f'{key} = %s' for key in parameters if parameters[key]]
         values = [parameters[key] for key in parameters if parameters[key]]
 
         sql = f'''
-            update {table}
-            set {', '.join(fields)}
-            where id = %s
+            do $$
+            begin
+                update {table}
+                set {', '.join(fields)}
+                where id = %s;
+
+                if not found then
+                    raise exception 'Nothing updated';
+                end if;
+            end
+            $$
         '''
 
-        self._db.perform(sql, *values, pk)  # TODO: check if "pk" exists
+        return self._db.perform(sql, *values, pk)
 
     def delete(self, table: str, pk: int) -> None:
         sql = f'''
