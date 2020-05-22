@@ -60,7 +60,7 @@ class Qedgal(object):
 
         self._db.perform(sql, pk)
 
-    def list(self, table: str, user_id: int = None) -> list:
+    def list(self, table: str, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
         sql = f'''
             select * 
             from {table}_facade
@@ -68,6 +68,9 @@ class Qedgal(object):
 
         if user_id:
             sql += f' where {user_id} = any(user_ids)'
+
+        sql += f' limit {limit}'
+        sql += f' offset {offset}'
 
         return list(self._db.select(sql))
 
@@ -83,7 +86,7 @@ class Qedgal(object):
 
         return next(self._db.select(sql, pk), dict())
 
-    def query(self, table: str, q: str, fields: list, user_id: int = None) -> list:
+    def query(self, table: str, q: str, fields: list, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
         filters = [f'{key}::varchar like %s' for key in fields]
         values = [f'%{q}%' for _ in fields]
 
@@ -95,6 +98,9 @@ class Qedgal(object):
 
         if user_id:
             sql += f' and {user_id} = any(user_ids)'
+
+        sql += f' limit {limit}'
+        sql += f' offset {offset}'
 
         return list(self._db.select(sql, *values))
 
