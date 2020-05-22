@@ -106,6 +106,16 @@ class Qedgal(object):
 
         return list(self._db.select(sql, *values))
 
+    def count(self, table: str) -> int:
+        sql = f'''
+            select count(*)
+            from {table}_facade
+        '''
+
+        rows = self._db.select(sql)
+        row = next(rows)
+        return row['count']
+
     def perform(self, sql: str, *args: Any) -> int:
         return self._db.perform(sql, *args)
 
