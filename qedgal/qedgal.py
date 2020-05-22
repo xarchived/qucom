@@ -1,3 +1,5 @@
+from typing import Any, Generator
+
 from patabase import Postgres
 
 
@@ -10,7 +12,7 @@ class Qedgal(object):
             password=password,
             database=database)
 
-    def add(self, table: str, **parameters: any) -> int:
+    def add(self, table: str, **parameters: Any) -> int:
         placeholders = ['%s' for _ in parameters]
 
         sql = f'''
@@ -23,7 +25,7 @@ class Qedgal(object):
         row = next(rows)
         return row['id']
 
-    def edit(self, table: str, pk: int, **parameters: any) -> int:
+    def edit(self, table: str, pk: int, **parameters: Any) -> int:
         fields = [f'{key} = %s' for key in parameters if parameters[key]]
         values = [parameters[key] for key in parameters if parameters[key]]
 
@@ -104,14 +106,14 @@ class Qedgal(object):
 
         return list(self._db.select(sql, *values))
 
-    def perform(self, sql: str, *args: any) -> int:
+    def perform(self, sql: str, *args: Any) -> int:
         return self._db.perform(sql, *args)
 
-    def select(self, sql: str, *args: any) -> iter:
+    def select(self, sql: str, *args: Any) -> Generator:
         return self._db.select(sql, *args)
 
-    def procedure(self, func_name: str, **parameters: any) -> int:
+    def procedure(self, func_name: str, **parameters: Any) -> int:
         return self._db.procedure(func_name, **parameters)
 
-    def function(self, func_name: str, **parameters: any) -> iter:
+    def function(self, func_name: str, **parameters: Any) -> Generator:
         return self._db.function(func_name, **parameters)
