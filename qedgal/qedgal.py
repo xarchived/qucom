@@ -1,4 +1,4 @@
-from typing import Any, Generator
+from typing import Any, Iterator
 
 from patabase import Postgres
 
@@ -109,11 +109,11 @@ class Qedgal(object):
     def perform(self, sql: str, *args: Any) -> int:
         return self._db.perform(sql, *args)
 
-    def select(self, sql: str, *args: Any) -> Generator:
+    def select(self, sql: str, *args: Any) -> Iterator[dict]:
         return self._db.select(sql, *args)
 
     def procedure(self, func_name: str, **parameters: Any) -> int:
         return self._db.procedure(func_name, **parameters)
 
-    def function(self, func_name: str, **parameters: Any) -> Generator:
+    def function(self, func_name: str, **parameters: Any) -> Iterator[dict]:
         return self._db.function(func_name, **parameters)
