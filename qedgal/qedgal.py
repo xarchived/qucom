@@ -49,18 +49,18 @@ class Qedgal(object):
         sql = f'''
             do $$
             begin
-                delete
-                from {table}
-                where id = %s;
-
-                if not found then
+                if exists(select from students where id = %s) then
+                    delete
+                    from {table}
+                    where id = %s;
+                else
                     raise exception 'Nothing deleted';
                 end if;
             end
             $$
         '''
 
-        self._db.perform(sql, pk)
+        self._db.perform(sql, pk, pk)
 
     def list(self, table: str, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
         sql = f'''
