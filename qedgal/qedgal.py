@@ -119,6 +119,14 @@ class Qedgal(object):
 
         return list(self._db.select(sql, *values))
 
+    def calendar(self, table: str) -> list:
+        sql = f'''
+            select *
+            from {table}_calendar
+        '''
+
+        return list(self._db.select(sql))
+
     def count(self, table: str) -> int:
         sql = f'''
             select count(*)
