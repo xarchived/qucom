@@ -1,6 +1,9 @@
 from typing import Any, Iterator
 
+import psycopg2.errors
 from patabase import Postgres
+
+from qedgal.exceptions import *
 
 
 class Qedgal(object):
@@ -43,7 +46,12 @@ class Qedgal(object):
             $$
         '''
 
-        return self._db.perform(sql, *values, pk)
+        try:
+            return self._db.perform(sql, *values, pk)
+        except psycopg2.errors.RaiseException as e:
+            if 'Nothing updated' in str(e):
+                raise NothingUpdated(f'There is no row such as "id = {pk}"') from None
+            raise e
 
     def delete(self, table: str, pk: int) -> None:
         sql = f'''
@@ -60,7 +68,12 @@ class Qedgal(object):
             $$
         '''
 
-        self._db.perform(sql, pk, pk)
+        try:
+            self._db.perform(sql, pk, pk)
+        except psycopg2.errors.RaiseException as e:
+            if 'Nothing deleted' in str(e):
+                raise NothingDeleted(f'There is no row such as "id = {pk}"') from None
+            raise e
 
     def list(self, table: str, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
         sql = f'''
