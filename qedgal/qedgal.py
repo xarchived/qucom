@@ -57,7 +57,7 @@ class Qedgal(object):
         sql = f'''
             do $$
             begin
-                if exists(select from students where id = %s) then
+                if exists(select from {table} where id = %s) then
                     delete
                     from {table}
                     where id = %s;
