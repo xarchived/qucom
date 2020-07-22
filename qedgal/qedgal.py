@@ -127,6 +127,16 @@ class Qedgal(object):
 
         return list(self._db.select(sql))
 
+    def columns(self, table: str):
+        sql = f'''
+            select column_name, is_nullable, data_type
+            from information_schema.columns
+            where table_schema = 'public'
+              and table_name = %s
+        '''
+
+        return list(self._db.select(sql, table))
+
     def count(self, table: str) -> int:
         sql = f'''
             select count(*)
