@@ -3,10 +3,10 @@ from typing import Any, Iterator
 import psycopg2.errors
 from patabase import Postgres
 
-from qedgal.exceptions import *
+from qucom.exceptions import *
 
 
-class Qedgal(object):
+class Qucom(object):
     def __init__(self, user: str, password: str, database: str, host: str = 'localhost', port=5432):
         self._db = Postgres(
             host=host,

@@ -1,4 +1,4 @@
-# Qedgal
+# Qucom
 When we want to delete a record from a table or insert a simple record despite table design queries are very similar.
 Personally always copy-paste code of another table and just edit it a little bit. Wouldn't it be nice if there was a
 query helper that do this tedious part for us? So, I created a package that do the exact job and now I am going to share
@@ -18,14 +18,14 @@ I spot 6 type of queries:
 Simply you can install it from PyPi by following command:
 
 ```bash
-pip install -U qedgal
+pip install -U qucom
 ```
 
 or if you prefer the latest development version, you can install it from the source:
 
 ```bash
-git clone https://github.com/xurvan/qedgal.git
-cd qedgal
+git clone https://github.com/xurvan/qucom.git
+cd qucom
 python setup.py install
 ```
 
@@ -36,9 +36,9 @@ fields those we dont like to show in our query. To solve these problems for each
 customize fields as we like inside it. These views should have a "_facade" postfix so library can understand them. 
 
 ```python
-from qedgal import Qedgal
+from qucom import Qucom
 
-db = Qedgal(host='localhost', user='USERNAME', password='PASSWORD', database='DATABASE_NAME')
+db = Qucom(host='localhost', user='USERNAME', password='PASSWORD', database='DATABASE_NAME')
 
 db.perform('''
     create table users

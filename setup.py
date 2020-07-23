@@ -2,7 +2,7 @@ import re
 
 from setuptools import find_packages, setup
 
-name = 'qedgal'
+name = 'qucom'
 owner = 'xurvan'
 
 with open(f'{name}/__init__.py') as f:
@@ -15,7 +15,7 @@ setup(
     name=name,
     version=version,
     license='apache-2.0',
-    description='Query, edit, delete, get, add and list',
+    description='Database helper for common queries',
     long_description=readme,
     long_description_content_type='text/markdown',
     author=owner.capitalize(),

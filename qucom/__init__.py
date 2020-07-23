@@ -1,3 +1,3 @@
-from .qedgal import Qedgal
+from .qucom import Qucom
 
 __version__ = '0.1.2.dev'
