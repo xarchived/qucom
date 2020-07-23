@@ -28,7 +28,7 @@ class Qucom(object):
             rows = self._db.select(sql, *parameters.values())
         except psycopg2.errors.UniqueViolation as e:
             if 'duplicate' in str(e):
-                raise DuplicateRecord(f'Duplicate record ({str(parameters)})')
+                raise DuplicateRecord(f'Duplicate record ({str(parameters)})') from None
             raise e
         row = next(rows)
         return row['id']
