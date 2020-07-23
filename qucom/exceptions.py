@@ -1,3 +1,7 @@
+class DuplicateRecord(Exception):
+    pass
+
+
 class NothingDeleted(Exception):
     pass
 
