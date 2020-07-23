@@ -50,7 +50,7 @@ class Qucom(object):
             return self._db.perform(sql, *values, pk)
         except psycopg2.errors.RaiseException as e:
             if 'Nothing updated' in str(e):
-                raise NothingUpdated(f'There is no row such as "id = {pk}"') from None
+                raise NothingUpdated(f'Record not found (id = {pk})') from None
             raise e
 
     def delete(self, table: str, pk: int) -> None:
@@ -72,7 +72,7 @@ class Qucom(object):
             self._db.perform(sql, pk, pk)
         except psycopg2.errors.RaiseException as e:
             if 'Nothing deleted' in str(e):
-                raise NothingDeleted(f'There is no row such as "id = {pk}"') from None
+                raise NothingDeleted(f'Record not found (id = {pk})') from None
             raise e
 
     def list(self, table: str, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
