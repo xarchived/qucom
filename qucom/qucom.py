@@ -21,12 +21,12 @@ def _error_handler(func):
         except psycopg2.errors.UndefinedColumn:
             raise UndefinedColumn(f'Column not found ({str(kwargs)})') from None
         except psycopg2.errors.UniqueViolation:
-            raise DuplicateRecord(f'Duplicate record ({str(parameters)})') from None
+            raise DuplicateRecord(f'Duplicate record ({str(kwargs)})') from None
         except psycopg2.errors.RaiseException as e:
             if 'Nothing updated' in str(e):
-                raise NothingUpdated(f'Record not found (id = {pk})') from None
+                raise NothingUpdated(f'Record not found (id = {kwargs["id"]})') from None
             if 'Nothing deleted' in str(e):
-                raise NothingDeleted(f'Record not found (id = {pk})') from None
+                raise NothingDeleted(f'Record not found (id = {kwargs["id"]})') from None
             raise e
 
     return wrapper
