@@ -16,7 +16,7 @@ def _error_handler(func):
             table = args[1]
 
         if 'pk' in kwargs:
-            pk = kwargs['id']
+            pk = kwargs['pk']
         elif len(args) > 2 and isinstance(args[2], int):
             pk = args[2]
         else:
