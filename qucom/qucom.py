@@ -24,6 +24,8 @@ def _error_handler(func):
 
         try:
             return func(*args, **kwargs)
+        except psycopg2.errors.InvalidTextRepresentation:
+            raise InvalidValue(f'Invalid value type ({str(kwargs)})') from None
         except psycopg2.errors.UndefinedTable:
             raise UndefinedTable(f'Table not found (table={table})') from None
         except psycopg2.errors.UndefinedColumn:

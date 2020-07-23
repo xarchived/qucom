@@ -24,3 +24,7 @@ class RequiredArgument(Exception):
 
 class NotNull(Exception):
     pass
+
+
+class InvalidValue(Exception):
+    pass
