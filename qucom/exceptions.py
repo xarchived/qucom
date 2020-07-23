@@ -16,3 +16,7 @@ class NothingDeleted(Exception):
 
 class NothingUpdated(Exception):
     pass
+
+
+class RequiredArgument(Exception):
+    pass

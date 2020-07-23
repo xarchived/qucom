@@ -51,6 +51,9 @@ class Qucom(object):
 
     @_error_handler
     def add(self, table: str, **parameters: Any) -> int:
+        if not parameters:
+            raise RequiredArgument('Parameters can not be empty')
+
         placeholders = ['%s' for _ in parameters]
 
         sql = f'''
@@ -65,6 +68,9 @@ class Qucom(object):
 
     @_error_handler
     def edit(self, table: str, pk: int, **parameters: Any) -> int:
+        if not parameters:
+            raise RequiredArgument('Parameters can not be empty')
+
         fields = [f'{key} = %s' for key in parameters if parameters[key]]
         values = [parameters[key] for key in parameters if parameters[key]]
 
