@@ -1,7 +1,6 @@
-from typing import Any, Iterator
-
 import psycopg2.errors
 from patabase import Postgres
+from typing import Any, Iterator
 
 from qucom.exceptions import *
 
@@ -21,6 +20,14 @@ def _error_handler(func):
             raise UndefinedTable(f'Table not found (table={table})') from None
         except psycopg2.errors.UndefinedColumn:
             raise UndefinedColumn(f'Column not found ({str(kwargs)})') from None
+        except psycopg2.errors.UniqueViolation:
+            raise DuplicateRecord(f'Duplicate record ({str(parameters)})') from None
+        except psycopg2.errors.RaiseException as e:
+            if 'Nothing updated' in str(e):
+                raise NothingUpdated(f'Record not found (id = {pk})') from None
+            if 'Nothing deleted' in str(e):
+                raise NothingDeleted(f'Record not found (id = {pk})') from None
+            raise e
 
     return wrapper
 
@@ -44,12 +51,7 @@ class Qucom(object):
             returning id
         '''
 
-        try:
-            rows = self._db.select(sql, *parameters.values())
-        except psycopg2.errors.UniqueViolation as e:
-            if 'duplicate' in str(e):
-                raise DuplicateRecord(f'Duplicate record ({str(parameters)})') from None
-            raise e
+        rows = self._db.select(sql, *parameters.values())
         row = next(rows)
         return row['id']
 
@@ -72,12 +74,7 @@ class Qucom(object):
             $$
         '''
 
-        try:
-            return self._db.perform(sql, *values, pk)
-        except psycopg2.errors.RaiseException as e:
-            if 'Nothing updated' in str(e):
-                raise NothingUpdated(f'Record not found (id = {pk})') from None
-            raise e
+        return self._db.perform(sql, *values, pk)
 
     @_error_handler
     def delete(self, table: str, pk: int) -> None:
@@ -95,12 +92,7 @@ class Qucom(object):
             $$
         '''
 
-        try:
-            self._db.perform(sql, pk, pk)
-        except psycopg2.errors.RaiseException as e:
-            if 'Nothing deleted' in str(e):
-                raise NothingDeleted(f'Record not found (id = {pk})') from None
-            raise e
+        self._db.perform(sql, pk, pk)
 
     @_error_handler
     def list(self, table: str, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
