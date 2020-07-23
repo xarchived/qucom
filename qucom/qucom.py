@@ -18,7 +18,7 @@ def _error_handler(func):
         try:
             return func(*args, **kwargs)
         except psycopg2.errors.UndefinedTable:
-            raise UndefinedTable(f'Table not found ({table})') from None
+            raise UndefinedTable(f'Table not found (table={table})') from None
         except psycopg2.errors.UndefinedColumn:
             raise UndefinedColumn(f'Column not found ({str(kwargs)})') from None
 
