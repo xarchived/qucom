@@ -30,6 +30,8 @@ def _error_handler(func):
             raise UndefinedColumn(f'Column not found ({str(kwargs)})') from None
         except psycopg2.errors.UniqueViolation:
             raise DuplicateRecord(f'Duplicate record ({str(kwargs)})') from None
+        except psycopg2.errors.NotNullViolation:
+            raise NotNull(f'Not NULL violation ({str(kwargs)})') from None
         except psycopg2.errors.RaiseException as e:
             if 'Nothing updated' in str(e):
                 raise NothingUpdated(f'Record not found (id={pk})') from None

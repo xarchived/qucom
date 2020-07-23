@@ -20,3 +20,7 @@ class NothingUpdated(Exception):
 
 class RequiredArgument(Exception):
     pass
+
+
+class NotNull(Exception):
+    pass
