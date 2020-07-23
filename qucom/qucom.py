@@ -1,6 +1,7 @@
+from typing import Any, Iterator
+
 import psycopg2.errors
 from patabase import Postgres
-from typing import Any, Iterator
 
 from qucom.exceptions import *
 
@@ -14,6 +15,13 @@ def _error_handler(func):
         else:
             table = args[1]
 
+        if 'pk' in kwargs:
+            pk = kwargs['id']
+        elif len(args) > 2 and isinstance(args[2], int):
+            pk = args[2]
+        else:
+            pk = -1
+
         try:
             return func(*args, **kwargs)
         except psycopg2.errors.UndefinedTable:
@@ -24,9 +32,9 @@ def _error_handler(func):
             raise DuplicateRecord(f'Duplicate record ({str(kwargs)})') from None
         except psycopg2.errors.RaiseException as e:
             if 'Nothing updated' in str(e):
-                raise NothingUpdated(f'Record not found (id = {kwargs["id"]})') from None
+                raise NothingUpdated(f'Record not found (id={pk})') from None
             if 'Nothing deleted' in str(e):
-                raise NothingDeleted(f'Record not found (id = {kwargs["id"]})') from None
+                raise NothingDeleted(f'Record not found (id={pk})') from None
             raise e
 
     return wrapper
