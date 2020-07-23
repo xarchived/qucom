@@ -1,3 +1,11 @@
+class UndefinedTable(Exception):
+    pass
+
+
+class UndefinedColumn(Exception):
+    pass
+
+
 class DuplicateRecord(Exception):
     pass
 

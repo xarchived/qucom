@@ -6,6 +6,25 @@ from patabase import Postgres
 from qucom.exceptions import *
 
 
+def _error_handler(func):
+    def wrapper(*args, **kwargs):
+        assert isinstance(args[0], Qucom)
+
+        if 'table' in kwargs:
+            table = kwargs['table']
+        else:
+            table = args[1]
+
+        try:
+            return func(*args, **kwargs)
+        except psycopg2.errors.UndefinedTable:
+            raise UndefinedTable(f'Table not found ({table})') from None
+        except psycopg2.errors.UndefinedColumn:
+            raise UndefinedColumn(f'Column not found ({str(kwargs)})') from None
+
+    return wrapper
+
+
 class Qucom(object):
     def __init__(self, user: str, password: str, database: str, host: str = 'localhost', port=5432):
         self._db = Postgres(
@@ -15,6 +34,7 @@ class Qucom(object):
             password=password,
             database=database)
 
+    @_error_handler
     def add(self, table: str, **parameters: Any) -> int:
         placeholders = ['%s' for _ in parameters]
 
@@ -33,6 +53,7 @@ class Qucom(object):
         row = next(rows)
         return row['id']
 
+    @_error_handler
     def edit(self, table: str, pk: int, **parameters: Any) -> int:
         fields = [f'{key} = %s' for key in parameters if parameters[key]]
         values = [parameters[key] for key in parameters if parameters[key]]
@@ -58,6 +79,7 @@ class Qucom(object):
                 raise NothingUpdated(f'Record not found (id = {pk})') from None
             raise e
 
+    @_error_handler
     def delete(self, table: str, pk: int) -> None:
         sql = f'''
             do $$
@@ -80,6 +102,7 @@ class Qucom(object):
                 raise NothingDeleted(f'Record not found (id = {pk})') from None
             raise e
 
+    @_error_handler
     def list(self, table: str, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
         sql = f'''
             select * 
@@ -94,6 +117,7 @@ class Qucom(object):
 
         return list(self._db.select(sql))
 
+    @_error_handler
     def get(self, table: str, pk: int, user_id: int = None) -> dict:
         sql = f'''
             select * 
@@ -106,6 +130,7 @@ class Qucom(object):
 
         return next(self._db.select(sql, pk), dict())
 
+    @_error_handler
     def query(self, table: str, q: str, fields: list, user_id: int = None, limit: int = 10, offset: int = 0) -> list:
         filters = [f'{key}::varchar like %s' for key in fields]
         values = [f'%{q}%' for _ in fields]
@@ -124,6 +149,7 @@ class Qucom(object):
 
         return list(self._db.select(sql, *values))
 
+    @_error_handler
     def calendar(self, table: str) -> list:
         sql = f'''
             select *
@@ -132,6 +158,7 @@ class Qucom(object):
 
         return list(self._db.select(sql))
 
+    @_error_handler
     def columns(self, table: str):
         sql = f'''
             select column_name, is_nullable, data_type
@@ -142,6 +169,7 @@ class Qucom(object):
 
         return list(self._db.select(sql, table))
 
+    @_error_handler
     def count(self, table: str) -> int:
         sql = f'''
             select count(*)
