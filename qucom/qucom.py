@@ -169,7 +169,7 @@ class Qucom(object):
         return list(self._db.select(sql))
 
     @_error_handler
-    def columns(self, table: str):
+    def columns(self, table: str, exclude: list = None):
         sql = f'''
             select column_name, is_nullable, data_type
             from information_schema.columns
@@ -177,7 +177,13 @@ class Qucom(object):
               and table_name = %s
         '''
 
-        return list(self._db.select(sql, table))
+        rows = []
+        for row in self._db.select(sql, table):
+            if exclude and row['column_name'] in exclude:
+                continue
+            rows.append(row)
+
+        return rows
 
     @_error_handler
     def count(self, table: str) -> int:
