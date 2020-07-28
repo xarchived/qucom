@@ -46,12 +46,17 @@ def _error_handler(func):
 
 class Qucom(object):
     def __init__(self, user: str, password: str, database: str, host: str = 'localhost', port=5432):
-        self._db = Postgres(
-            host=host,
-            port=port,
-            user=user,
-            password=password,
-            database=database)
+        try:
+            self._db = Postgres(
+                host=host,
+                port=port,
+                user=user,
+                password=password,
+                database=database)
+        except psycopg2.OperationalError as e:
+            if 'Connection refused' in str(e):
+                raise ConnectionRefused('Could not connect to server') from None
+            raise e
 
     @_error_handler
     def add(self, table: str, **parameters: Any) -> int:

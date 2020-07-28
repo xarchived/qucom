@@ -28,3 +28,7 @@ class NotNull(Exception):
 
 class InvalidValue(Exception):
     pass
+
+
+class ConnectionRefused(Exception):
+    pass
